@@ -5,8 +5,8 @@
 const char* ssid = "Comunidad IoT";
 const char* pass = "Sistecredito2023*";
 
-const char* mqtt_client = "192.168.0.101";
-const char* mqtt_pub = "LED/2";
+const char* mqtt_client = "192.168.0.104";
+const char* mqtt_pub = "LED/3";
 
 const int button_led = 0;
 int str = 0;
