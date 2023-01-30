@@ -2,14 +2,18 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
+const int buttonLed = 0;
+const int ledPin = LED_BUILTIN;
+
+int val = 0;
+int old_val = 0;
+int str = 0; //val almacena el estado del botonint old_val = 0; // almacena el antiguo valor de valint str = 0; //
+
 const char* ssid = "Comunidad IoT";
 const char* pass = "Sistecredito2023*";
 
-const char* mqtt_client = "192.168.0.104";
+const char* mqtt_client = "192.168.0.105";
 const char* mqtt_pub = "LED/3";
-
-const int button_led = 0;
-int str = 0;
 
 WiFiClient espclient;
 PubSubClient client(espclient);
@@ -60,7 +64,7 @@ void reconnect(){
 
 void setup(){
   
-  pinMode(button_led, INPUT_PULLUP);
+  pinMode(buttonLed, INPUT_PULLUP);
 
   Serial.begin(115200);
   setup_wifi();
@@ -73,19 +77,25 @@ void loop() {
     reconnect();
   }
   if(client.connected()){
-    int str = digitalRead(button_led);
-
-    if (str == 0)
+    val= digitalRead(buttonLed); // lee el estado del Boton    if ((val == HIGH) && (old_val == LOW))
+    if((val == HIGH)&& (old_val == LOW))
+    {
+    str= 1 - str;
+    delay(10);
+    }
+    old_val = val; // valor del antiguo estado    if (str == 0)
+    if (str==0)
     {
       client.publish(mqtt_pub, "on");
-      delay(1000);
+      digitalWrite(ledPin, 0);
+      delay(300);
     }
-    else if (str == 1)
-    {
+    else    {
       client.publish(mqtt_pub, "off");
-      delay(1000);
+      digitalWrite(ledPin, 1); 
+      delay(300);
     }
   }
+  
   client.loop();
 }
-
